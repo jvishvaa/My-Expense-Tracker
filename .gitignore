@@ -1,0 +1,14 @@
+# mac
+.DS_Store
+
+# python
+backend/env/
+backend/venv/
+backend/__pycache__/
+
+# logs
+*.log
+
+# env files
+.env
+.env.local
