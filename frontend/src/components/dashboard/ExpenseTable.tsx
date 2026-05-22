@@ -5,6 +5,8 @@ import { useExpenseStore } from "@/store/expenseStore";
 import { Expense } from "@/types/expense";
 
 import { Pencil, Trash2 } from "lucide-react";
+import { useState } from "react";
+import DeleteConfirmModal from "@/components/dashboard/DeleteConfirmationModel";
 
 interface Props {
   expenses: Expense[];
@@ -20,15 +22,17 @@ export default function ExpenseTable({
   setEditingExpense,
 }: Props) {
   const { deleteExpense } = useExpenseStore();
-  const handleDelete = async (id: number) => {
-    const confirmed = window.confirm("Delete this transaction?");
+  const [deleteId, setDeleteId] = useState<number | null>(null);
 
-    if (!confirmed) return;
+  const handleDelete = async () => {
+    if (!deleteId) return;
 
     try {
-      await deleteExpense(id);
+      await deleteExpense(deleteId);
 
       refreshExpenses();
+
+      setDeleteId(null);
     } catch (error) {
       console.log(error);
     }
@@ -91,7 +95,7 @@ export default function ExpenseTable({
                     </button>
 
                     <button
-                      onClick={() => handleDelete(expense.id)}
+                      onClick={() => setDeleteId(expense.id)}
                       className="rounded-lg bg-red-500/20 p-2 text-red-400 transition hover:bg-red-500/30 cursor-pointer"
                     >
                       <Trash2 size={18} />
@@ -103,6 +107,11 @@ export default function ExpenseTable({
           </tbody>
         </table>
       </div>
+      <DeleteConfirmModal
+        open={!!deleteId}
+        onClose={() => setDeleteId(null)}
+        onConfirm={handleDelete}
+      />
     </div>
   );
 }
