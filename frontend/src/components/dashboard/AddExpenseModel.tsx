@@ -24,6 +24,7 @@ export default function AddExpenseModal({ refreshExpenses }: Props) {
   const { addExpense, expenses } = useExpenseStore();
 
   const [open, setOpen] = useState(false);
+
   const [loading, setLoading] = useState(false);
 
   const [categories, setCategories] = useState<string[]>([]);
@@ -58,7 +59,7 @@ export default function AddExpenseModal({ refreshExpenses }: Props) {
         amount: Number(form.amount),
       });
 
-      refreshExpenses();
+      await refreshExpenses();
 
       setForm({
         title: "",
@@ -77,7 +78,14 @@ export default function AddExpenseModal({ refreshExpenses }: Props) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={open}
+      onOpenChange={(value) => {
+        if (!loading) {
+          setOpen(value);
+        }
+      }}
+    >
       {/* BUTTON */}
       <DialogTrigger asChild>
         <motion.button
@@ -87,7 +95,7 @@ export default function AddExpenseModal({ refreshExpenses }: Props) {
           whileTap={{
             scale: 0.96,
           }}
-          className="group flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-500 px-6 py-3 font-semibold text-white shadow-lg shadow-cyan-500/20 transition-all duration-300 cursor-pointer"
+          className="group flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-500 px-5 py-3 font-semibold text-white shadow-lg shadow-cyan-500/20 transition-all duration-300 sm:w-auto cursor-pointer"
         >
           <Plus
             size={18}
@@ -98,13 +106,13 @@ export default function AddExpenseModal({ refreshExpenses }: Props) {
       </DialogTrigger>
 
       {/* MODAL */}
-      <DialogContent className="max-w-2xl overflow-hidden rounded-3xl border border-white/10 bg-[#07111f] p-0 text-white shadow-2xl shadow-cyan-500/10">
+      <DialogContent className="max-h-[92vh] max-w-[95vw] overflow-y-auto rounded-3xl border border-white/10 bg-[#07111f] p-0 text-white shadow-2xl shadow-cyan-500/10 sm:max-w-2xl">
         {/* TOP GRADIENT */}
         <div className="h-2 bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500" />
 
-        <div className="p-8">
+        <div className="p-5 sm:p-8">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-3 text-3xl font-bold">
+            <DialogTitle className="flex items-center gap-3 text-2xl font-bold sm:text-3xl">
               <div className="rounded-2xl bg-cyan-500/10 p-3 text-cyan-400">
                 <Wallet size={24} />
               </div>
@@ -216,6 +224,7 @@ export default function AddExpenseModal({ refreshExpenses }: Props) {
 
                   <input
                     type="text"
+                    list="categories"
                     placeholder="Enter category"
                     value={form.category}
                     onChange={(e) =>
@@ -226,6 +235,12 @@ export default function AddExpenseModal({ refreshExpenses }: Props) {
                     }
                     className="w-full bg-transparent py-4 outline-none placeholder:text-slate-500"
                   />
+
+                  <datalist id="categories">
+                    {categories.map((category) => (
+                      <option key={category} value={category} />
+                    ))}
+                  </datalist>
                 </div>
               </div>
 
@@ -263,10 +278,12 @@ export default function AddExpenseModal({ refreshExpenses }: Props) {
               }}
               disabled={loading}
               onClick={handleSubmit}
-              className="mt-4 flex min-h-[64px] items-center justify-center rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-500 py-4 text-lg font-semibold text-white shadow-xl shadow-cyan-500/20 transition-all duration-300 hover:shadow-cyan-500/40 disabled:cursor-not-allowed disabled:opacity-80"
+              className="mt-4 flex min-h-[70px] items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-500 px-6 py-4 text-lg font-semibold text-white shadow-xl shadow-cyan-500/20 transition-all duration-300 hover:shadow-cyan-500/40 disabled:cursor-not-allowed disabled:opacity-80"
             >
               {loading ? (
-                <div className="loader scale-50" />
+                <div className="flex scale-50 items-center justify-center">
+                  <div className="loader" />
+                </div>
               ) : (
                 "Save Transaction"
               )}

@@ -77,7 +77,7 @@ export default function DashboardPage() {
   // initial load
   useEffect(() => {
     refreshAllData();
-  }, [fetchExpenses]);
+  }, []);
 
   // analytics
   const { income, expensesTotal, balance } = calculateAnalytics(expenses);
@@ -106,101 +106,115 @@ export default function DashboardPage() {
   }
 
   return (
-    <main className="flex min-h-screen bg-slate-950 text-white">
-      {/* SIDEBAR */}
-      <Sidebar />
+    <main className="min-h-screen bg-slate-950 text-white">
+      <div className="flex flex-col lg:flex-row">
+        {/* SIDEBAR */}
+        <Sidebar />
 
-      {/* CONTENT */}
-      <section className="flex-1">
-        <Topbar />
+        {/* CONTENT */}
+        <section className="min-w-0 flex-1">
+          <Topbar />
 
-        <div className="p-6">
-          {/* HEADER */}
-          <div className="mb-6 flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold">Overview</h1>
+          <div className="space-y-6 p-4 sm:p-6">
+            {/* HEADER */}
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h1 className="text-2xl font-bold sm:text-3xl">Overview</h1>
 
-              <p className="text-slate-400">Track your financial activity</p>
+                <p className="mt-1 text-sm text-slate-400 sm:text-base">
+                  Track your financial activity
+                </p>
+              </div>
+
+              <div className="w-full sm:w-auto">
+                <AddExpenseModal refreshExpenses={refreshAllData} />
+              </div>
             </div>
 
-            <AddExpenseModal refreshExpenses={refreshAllData} />
-          </div>
+            {/* ANALYTICS */}
+            <AnalyticsCards
+              income={income}
+              expenses={expensesTotal}
+              balance={balance}
+            />
 
-          {/* ANALYTICS */}
-          <AnalyticsCards
-            income={income}
-            expenses={expensesTotal}
-            balance={balance}
-          />
+            {/* INSIGHTS */}
+            <Insights insights={insights} />
 
-          {/* INSIGHTS */}
-          <Insights insights={insights} />
+            {/* CHARTS */}
+            <div className="grid gap-6 xl:grid-cols-2">
+              <div className="min-w-0 overflow-hidden">
+                <ExpensePieChart expenses={filteredExpenses} />
+              </div>
 
-          {/* CHARTS */}
-          <div className="mt-8 grid gap-6 xl:grid-cols-2">
-            <ExpensePieChart expenses={filteredExpenses} />
+              <div className="min-w-0 overflow-hidden">
+                <MonthlyChart expenses={filteredExpenses} />
+              </div>
+            </div>
 
-            <MonthlyChart expenses={filteredExpenses} />
-          </div>
+            {/* BUDGET FORM */}
+            <div>
+              <BudgetForm
+                onCreated={refreshAllData}
+                categories={uniqueCategories}
+              />
+            </div>
 
-          {/* BUDGET FORM */}
-          <div className="mt-8">
-            <BudgetForm
-              onCreated={refreshAllData}
-              categories={uniqueCategories}
+            {/* BUDGET PROGRESS */}
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              {budgets.map((budget) => {
+                const spent = expenses
+                  .filter(
+                    (expense) =>
+                      expense.category === budget.category &&
+                      expense.type === "expense",
+                  )
+                  .reduce((acc, curr) => acc + curr.amount, 0);
+
+                return (
+                  <BudgetProgress
+                    key={budget.id}
+                    id={budget.id}
+                    category={budget.category}
+                    spent={spent}
+                    limit={budget.monthly_limit}
+                    refreshBudgets={refreshAllData}
+                  />
+                );
+              })}
+            </div>
+
+            {/* FILTERS */}
+            <div className="overflow-x-auto">
+              <FilterBar
+                search={search}
+                setSearch={setSearch}
+                filterType={filterType}
+                setFilterType={setFilterType}
+                filterCategory={filterCategory}
+                setFilterCategory={setFilterCategory}
+                categories={uniqueCategories}
+              />
+            </div>
+
+            {/* TABLE */}
+            <div className="overflow-x-auto rounded-3xl">
+              <ExpenseTable
+                expenses={filteredExpenses}
+                refreshExpenses={refreshAllData}
+                setEditingExpense={setEditingExpense}
+              />
+            </div>
+
+            {/* EDIT MODAL */}
+            <EditExpenseModel
+              expense={editingExpense}
+              onClose={() => setEditingExpense(null)}
+              refreshExpenses={refreshAllData}
             />
           </div>
-
-          {/* BUDGET PROGRESS */}
-          <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-            {budgets.map((budget) => {
-              const spent = expenses
-                .filter(
-                  (expense) =>
-                    expense.category === budget.category &&
-                    expense.type === "expense",
-                )
-                .reduce((acc, curr) => acc + curr.amount, 0);
-
-              return (
-                <BudgetProgress
-                  key={budget.id}
-                  id={budget.id}
-                  category={budget.category}
-                  spent={spent}
-                  limit={budget.monthly_limit}
-                  refreshBudgets={refreshAllData}
-                />
-              );
-            })}
-          </div>
-
-          {/* FILTERS */}
-          <FilterBar
-            search={search}
-            setSearch={setSearch}
-            filterType={filterType}
-            setFilterType={setFilterType}
-            filterCategory={filterCategory}
-            setFilterCategory={setFilterCategory}
-            categories={uniqueCategories}
-          />
-
-          {/* TABLE */}
-          <ExpenseTable
-            expenses={filteredExpenses}
-            refreshExpenses={refreshAllData}
-            setEditingExpense={setEditingExpense}
-          />
-
-          {/* EDIT MODAL */}
-          <EditExpenseModel
-            expense={editingExpense}
-            onClose={() => setEditingExpense(null)}
-            refreshExpenses={refreshAllData}
-          />
-        </div>
-      </section>
+        </section>
+      </div>
     </main>
   );
 }

@@ -67,27 +67,80 @@ export default function LandingPage() {
 
       {/* NAVBAR */}
       <header className="sticky top-0 z-50 border-b border-white/10 bg-slate-950/70 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 sm:py-5">
+          {/* LOGO */}
           <motion.h1
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-3xl font-extrabold text-transparent"
+            initial={{
+              opacity: 0,
+              y: -20,
+            }}
+            animate={{
+              opacity: 1,
+              y: 0,
+            }}
+            transition={{
+              duration: 0.5,
+            }}
+            className="
+        bg-gradient-to-r
+        from-cyan-400
+        to-blue-500
+        bg-clip-text
+        text-2xl
+        font-extrabold
+        tracking-tight
+        text-transparent
+        sm:text-3xl
+      "
           >
             ExpenseTracker
           </motion.h1>
 
-          <div className="flex items-center gap-4">
+          {/* ACTIONS */}
+          <div className="flex items-center gap-2 sm:gap-4">
             <Link
               href="/login"
-              className="rounded-xl border border-white/10 px-5 py-2 text-sm font-medium text-slate-300 transition hover:bg-white/10 hover:text-white"
+              className="
+          rounded-xl
+          border
+          border-white/10
+          px-3
+          py-2
+          text-xs
+          font-medium
+          text-slate-300
+          transition-all
+          duration-300
+          hover:bg-white/10
+          hover:text-white
+          sm:px-5
+          sm:text-sm
+        "
             >
               Login
             </Link>
 
             <Link
               href="/signup"
-              className="rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 px-5 py-2 text-sm font-semibold text-white transition hover:scale-105"
+              className="
+                rounded-xl
+                bg-gradient-to-r
+                from-cyan-500
+                to-blue-500
+                px-3
+                py-2
+                text-xs
+                font-semibold
+                text-white
+                shadow-lg
+                shadow-cyan-500/20
+                transition-all
+                duration-300
+                hover:scale-105
+                hover:shadow-cyan-500/40
+                sm:px-5
+                sm:text-sm
+              "
             >
               Get Started
             </Link>
@@ -321,6 +374,47 @@ export default function LandingPage() {
           </div>
         </motion.div>
       </section>
+      {/* FOOTER */}
+      <footer className="relative z-10 border-t border-white/10 bg-slate-950/60 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 px-6 py-8 md:flex-row">
+          {/* LEFT */}
+          <div>
+            <h2 className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-2xl font-extrabold text-transparent">
+              ExpenseTracker
+            </h2>
+
+            <p className="mt-2 text-md text-slate-400">
+              Modern finance management platform with analytics, budgeting, and
+              intelligent expense tracking.
+            </p>
+          </div>
+
+          {/* CENTER */}
+          <div className="flex items-center gap-6 text-md text-slate-400">
+            <Link href="/login" className="transition hover:text-cyan-400">
+              Login
+            </Link>
+
+            <Link href="/signup" className="transition hover:text-cyan-400">
+              Signup
+            </Link>
+          </div>
+
+          {/* RIGHT */}
+          <div className="text-center md:text-right">
+            <p className="text-md text-slate-400">
+              © {new Date().getFullYear()} ExpenseTracker
+            </p>
+
+            <p className="mt-1 text-md font-medium text-cyan-400">
+              Designed & Developed by Jayavishvaa J
+            </p>
+          </div>
+        </div>
+
+        {/* BOTTOM GLOW */}
+        <div className="mx-auto h-px max-w-7xl bg-gradient-to-r from-transparent via-cyan-500/40 to-transparent" />
+      </footer>
     </main>
   );
 }

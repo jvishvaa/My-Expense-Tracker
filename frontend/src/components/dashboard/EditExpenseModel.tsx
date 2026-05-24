@@ -32,7 +32,6 @@ export default function EditTransactionModal({
 }: Props) {
   const [form, setForm] = useState<any>(null);
 
-  const [categories, setCategories] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -40,26 +39,6 @@ export default function EditTransactionModal({
       setForm(expense);
     }
   }, [expense]);
-
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
-  const fetchCategories = async () => {
-    try {
-      const response = await API.get("/expenses");
-
-      const uniqueCategories = [
-        ...new Set(
-          response.data.map((item: any) => item.category).filter(Boolean),
-        ),
-      ];
-
-      setCategories(uniqueCategories as string[]);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   if (!form) return null;
 
@@ -243,12 +222,37 @@ export default function EditTransactionModal({
             }}
             disabled={loading}
             onClick={handleUpdate}
-            className="mt-4 flex w-full items-center cursor-pointer justify-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-400 to-blue-500 py-4 font-semibold text-black shadow-lg shadow-cyan-500/20 transition-all hover:shadow-cyan-500/40"
+            className="
+                mt-4
+                flex
+                min-h-[64px]
+                w-full
+                items-center
+                justify-center
+                gap-2
+                rounded-2xl
+                bg-gradient-to-r
+                from-cyan-400
+                to-blue-500
+                py-4
+                font-semibold
+                text-black
+                shadow-lg
+                shadow-cyan-500/20
+                transition-all
+                duration-300
+                hover:shadow-cyan-500/40
+                disabled:cursor-not-allowed
+                disabled:opacity-80
+              "
           >
             {loading ? (
               <div className="loader scale-50" />
             ) : (
-              "Update Transaction"
+              <>
+                <Save size={18} />
+                Update Transaction
+              </>
             )}
           </motion.button>
         </motion.div>
