@@ -6,13 +6,10 @@ import { AlertTriangle, Trash2, X } from "lucide-react";
 
 interface Props {
   open: boolean;
-
   onClose: () => void;
-
   onConfirm: () => void;
-
+  loading: boolean;
   title?: string;
-
   description?: string;
 }
 
@@ -20,6 +17,7 @@ export default function DeleteConfirmModal({
   open,
   onClose,
   onConfirm,
+  loading,
   title = "Delete Transaction?",
   description = "This action cannot be undone.",
 }: Props) {
