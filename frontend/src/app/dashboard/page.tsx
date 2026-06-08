@@ -156,7 +156,7 @@ export default function DashboardPage() {
             <div>
               <BudgetForm
                 onCreated={refreshAllData}
-                categories={uniqueCategories}
+                // categories={uniqueCategories}
               />
             </div>
 
