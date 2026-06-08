@@ -35,7 +35,7 @@ Base.metadata.create_all(bind=engine)
 
 origins = [
     "http://localhost:3000",
-    "https://your-app.vercel.app",
+    "https://my-expense-tracker-flame.vercel.app",
 ]
 
 app.add_middleware(
