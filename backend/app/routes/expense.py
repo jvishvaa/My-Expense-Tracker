@@ -23,9 +23,9 @@ router = APIRouter(
 def create_expense(
     payload: ExpenseCreate,
     db: Session = Depends(get_db),
-    # current_user: User = Depends(
-    #     get_current_user
-    # )
+    current_user: User = Depends(
+        get_current_user
+    )
 ):
     expense = Expense(
         title=payload.title,
@@ -33,13 +33,11 @@ def create_expense(
         category=payload.category,
         type=payload.type,
         date=payload.date,
-        user_id=1
+        user_id= current_user.id,
     )
 
     db.add(expense)
-
     db.commit()
-
     db.refresh(expense)
 
     return expense
@@ -47,25 +45,29 @@ def create_expense(
 @router.get("/")
 def get_expenses(
     db: Session = Depends(get_db),
-    # current_user: User = Depends(
-    #     get_current_user
-    # )
+    current_user: User = Depends(
+        get_current_user
+    )
 ):
-    # expenses = db.query(Expense).filter(
-    #     Expense.user_id == current_user.id
-    # ).all()
+    expenses = db.query(Expense).filter(
+        Expense.user_id == current_user.id
+    ).all()
     
-    expenses = db.query(Expense).all()
+    expenses = db.query(Expense).filter(
+        Expense.user_id == current_user.id
+    ).all()
 
     return expenses
 
 @router.delete("/{expense_id}")
 def delete_expense(
     expense_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
     expense = db.query(Expense).filter(
-        Expense.id == expense_id
+        Expense.id == expense_id,
+        Expense.user_id == current_user.id
     ).first()
 
     if not expense:
@@ -74,7 +76,6 @@ def delete_expense(
         }
 
     db.delete(expense)
-
     db.commit()
 
     return {
@@ -85,10 +86,12 @@ def delete_expense(
 def update_expense(
     expense_id: int,
     payload: ExpenseCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
     expense = db.query(Expense).filter(
-        Expense.id == expense_id
+        Expense.id == expense_id,
+        Expense.user_id == current_user.id
     ).first()
 
     if not expense:
@@ -103,7 +106,6 @@ def update_expense(
     expense.date = payload.date
 
     db.commit()
-
     db.refresh(expense)
 
     return expense
